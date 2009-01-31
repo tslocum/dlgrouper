@@ -202,6 +202,10 @@ def messup(message):
   skip_new_group = True
   raw_input()
 
+def printSpecial(message):
+  sys.stdout.write(message) 
+  sys.stout.flush()
+
 def clearScreen():
   os.system(['clear','cls'][os.name == 'nt'])
 
