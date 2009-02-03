@@ -5,7 +5,7 @@ print """ ____  _        ____
 | | | | |     | |  _| '__/ _ \| | | | '_ \ / _ \ '__|
 | |_| | |___  | |_| | | | (_) | |_| | |_) |  __/ |   
 |____/|_____|  \____|_|  \___/ \__,_| .__/ \___|_|   
-                                    |_|           v0.2
+                                    |_|           v0.3
        Programmed by Trevor "tj9991" Slocum  
           tj9991.com - tslocum@gmail.com
 
@@ -87,6 +87,8 @@ def fillSeats(train, rownum, seats):
   for seat in train[rownum]:
     if seat == 0:
       for i in range(seats):
+        printDebug("Filling row " + str(rownum) + " seat " + str(seatnum))
+        
         train[rownum][seatnum] = 1
         seatnum += 1
       break
@@ -179,14 +181,15 @@ def nextGroup():
   return queue.pop()
 
 def checkAnyRiderAlone(train, attraction, row1_emptyseats, row2_emptyseats, groupsize):
+  global row1, row2
   if attraction[0] > 1 and ((row1_emptyseats == 1) or ((groupsize - row1_emptyseats) == 1)):
     if (row2_emptyseats == 1) or (((groupsize - row1_emptyseats) + row2_emptyseats) <= 1):  
       return True
 
-    fillSeats(train, row1, (row1_emptyseats - 1))
-    fillSeats(train, row2, (groupsize - row1_emptyseats) + 1)
-    return False
-  
+    if attraction[0] > 2:
+      row1_emptyseats -= 1
+    
+  printDebug("Row 1: " + str(row1) + ", Row 2: " + str(row2))
   fillSeats(train, row1, row1_emptyseats)
   fillSeats(train, row2, (groupsize - row1_emptyseats))
   return False
@@ -205,6 +208,11 @@ def messup(message):
 def printSpecial(message):
   sys.stdout.write(message) 
   sys.stout.flush()
+
+def printDebug(message):
+  if _DEBUG:
+    print message
+    raw_input()
 
 def clearScreen():
   os.system(['clear','cls'][os.name == 'nt'])
@@ -300,6 +308,7 @@ if not interrupt:
           if validRow(attraction, int(split_rows[0])) and validRow(attraction, int(split_rows[1])):
             row1 = (int(split_rows[0]) - 1)
             row2 = (int(split_rows[1]) - 1)
+            printDebug("Setting row1: " + str(row1) + ", row2:" + str(row2))
             if False: #emptySeatsInRow(train, row1) >= groupsize or emptySeatsInRow(train, row2) >= groupsize: IGNORE THIS
               messup("There is enough room to place that group in one row!")
             else:
